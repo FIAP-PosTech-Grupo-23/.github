@@ -1,1 +1,112 @@
+services:
+  fiap-pedido-receiver:
+    image: alangoncalvesaraujo/fiap-pedido-receiver
+    ports:
+      - "8080:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - rabbitmq-network
 
+  fiap-pedido-service:
+    image: alangoncalvesaraujo/fiap-pedido-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgresql-pedido-service:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-pedido-service:5432/pedido
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - POSTGRESQL_PEDIDO_SERVICE=postgresql-pedido-service
+    networks:
+      - pedido-service-network
+      - produto-service-network
+      - rabbitmq-network
+  postgresql-pedido-service:
+    image: postgres:15-alpine
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=pedido
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-pedido-service-volume:/var/lib/postgresql/data
+    networks:
+      - pedido-service-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      retries: 10
+      interval: 10s
+      timeout: 5s
+
+  fiap-produto-service:
+    image: alangoncalvesaraujo/fiap-produto-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgresql-produto-service:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-produto-service:5432/produto
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - POSTGRESQL_PRODUTO_SERVICE=postgresql-produto-service
+    networks:
+      - produto-service-network
+  postgresql-produto-service:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=produto
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-produto-service-volume:/var/lib/postgresql/data
+    networks:
+      - produto-service-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      retries: 10
+      interval: 10s
+      timeout: 5s
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: fiap
+      RABBITMQ_DEFAULT_PASS: fiap
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq/
+    networks:
+      - rabbitmq-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+volumes:
+  postgres-produto-service-volume:
+  postgres-pedido-service-volume:
+  rabbitmq-lib:
+  rabbitmq-log:
+
+networks:
+  produto-service-network:
+    name: produto-service-network
+  pedido-service-network:
+    name: pedido-service-network
+  rabbitmq-network:
+    name: rabbitmq-network
