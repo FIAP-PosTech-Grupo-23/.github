@@ -6,6 +6,10 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    environment:
+      - RABBITMQ_URL=rabbitmq
+      - RABBITMQ_USERNAME=fiap
+      - RABBITMQ_PASSWORD=fiap
     networks:
       - rabbitmq-network
 
@@ -19,13 +23,20 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-pedido-service:5432/pedido
+      - RABBITMQ_URL=rabbitmq
+      - RABBITMQ_USERNAME=fiap
+      - RABBITMQ_PASSWORD=fiap
+      - SPRING_DATASOURCE_URL=postgresql-pedido-service
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - POSTGRESQL_PEDIDO_SERVICE=postgresql-pedido-service
+      - PRODUTO_SERVICE_URL:fiap-produto-service
+      - CLIENTE_SERVICE_URL:fiap-cliente-service
+      - ESTOQUE_SERVICE_URL:fiap-estoque-service
+      - PAGAMENTO_SERVICE_URL:fiap-pagamento-service
     networks:
       - pedido-service-network
       - produto-service-network
+      - pagamento-service-network
       - rabbitmq-network
   postgresql-pedido-service:
     image: postgres:15-alpine
@@ -53,10 +64,9 @@ services:
       postgresql-produto-service:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-produto-service:5432/produto
+      - SPRING_DATASOURCE_URL=jdbc:postgresql-produto-service
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
-      - POSTGRESQL_PRODUTO_SERVICE=postgresql-produto-service
     networks:
       - produto-service-network
   postgresql-produto-service:
@@ -71,6 +81,37 @@ services:
       - postgres-produto-service-volume:/var/lib/postgresql/data
     networks:
       - produto-service-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      retries: 10
+      interval: 10s
+      timeout: 5s
+
+  fiap-pagamento-service:
+    image: alangoncalvesaraujo/fiap-pagamento-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      postgresql-pagamento-service:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=postgresql-pagamento-service
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    networks:
+      - pagamento-service-network
+  postgresql-pagamento-service:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=pagamento
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-pagamento-service-volume:/var/lib/postgresql/data
+    networks:
+      - pagamento-service-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       retries: 10
@@ -100,6 +141,7 @@ services:
 volumes:
   postgres-produto-service-volume:
   postgres-pedido-service-volume:
+  postgres-pagamento-service-volume:
   rabbitmq-lib:
   rabbitmq-log:
 
@@ -108,5 +150,7 @@ networks:
     name: produto-service-network
   pedido-service-network:
     name: pedido-service-network
+  pagamento-service-network:
+    name: pagamento-service-network
   rabbitmq-network:
     name: rabbitmq-network
