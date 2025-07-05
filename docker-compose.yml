@@ -8,6 +8,7 @@ services:
         condition: service_healthy
     environment:
       - RABBITMQ_URL=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=fiap
       - RABBITMQ_PASSWORD=fiap
     networks:
@@ -24,15 +25,16 @@ services:
         condition: service_healthy
     environment:
       - RABBITMQ_URL=rabbitmq
+      - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=fiap
       - RABBITMQ_PASSWORD=fiap
-      - SPRING_DATASOURCE_URL=postgresql-pedido-service
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - PRODUTO_SERVICE_URL:fiap-produto-service
-      - CLIENTE_SERVICE_URL:fiap-cliente-service
-      - ESTOQUE_SERVICE_URL:fiap-estoque-service
-      - PAGAMENTO_SERVICE_URL:fiap-pagamento-service
+      - PEDIDO_DATASOURCE_URL=postgresql-pedido-service
+      - PEDIDO_DATASOURCE_USERNAME=postgres
+      - PEDIDO_DATASOURCE_PASSWORD=postgres
+      - PRODUTO_SERVICE_URL=fiap-produto-service
+      - CLIENTE_SERVICE_URL=fiap-cliente-service
+      - ESTOQUE_SERVICE_URL=fiap-estoque-service
+      - PAGAMENTO_SERVICE_URL=fiap-pagamento-service
     networks:
       - pedido-service-network
       - produto-service-network
@@ -41,7 +43,7 @@ services:
   postgresql-pedido-service:
     image: postgres:15-alpine
     ports:
-      - "5434:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=pedido
       - POSTGRES_USER=postgres
@@ -64,15 +66,15 @@ services:
       postgresql-produto-service:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql-produto-service
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - PRODUTO_DATASOURCE_URL=postgresql-produto-service
+      - PRODUTO_DATASOURCE_USERNAME=postgres
+      - PRODUTO_DATASOURCE_PASSWORD=postgres
     networks:
       - produto-service-network
   postgresql-produto-service:
     image: postgres:15-alpine
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=produto
       - POSTGRES_USER=postgres
@@ -95,15 +97,15 @@ services:
       postgresql-pagamento-service:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=postgresql-pagamento-service
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - PAGAMENTO_DATASOURCE_URL=postgresql-pagamento-service
+      - PAGAMENTO_DATASOURCE_USERNAME=postgres
+      - PAGAMENTO_DATASOURCE_PASSWORD=postgres
     networks:
       - pagamento-service-network
   postgresql-pagamento-service:
     image: postgres:15-alpine
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=pagamento
       - POSTGRES_USER=postgres
@@ -147,10 +149,18 @@ volumes:
 
 networks:
   produto-service-network:
+    driver: bridge
+    internal: true
     name: produto-service-network
   pedido-service-network:
+    driver: bridge
+    internal: true
     name: pedido-service-network
   pagamento-service-network:
+    driver: bridge
+    internal: true
     name: pagamento-service-network
   rabbitmq-network:
+    driver: bridge
+    internal: true
     name: rabbitmq-network
