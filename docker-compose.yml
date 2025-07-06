@@ -74,7 +74,7 @@ services:
   postgresql-produto-service:
     image: postgres:15-alpine
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=produto
       - POSTGRES_USER=postgres
@@ -105,7 +105,7 @@ services:
   postgresql-pagamento-service:
     image: postgres:15-alpine
     ports:
-      - "5432:5432"
+      - "5436:5432"
     environment:
       - POSTGRES_DB=pagamento
       - POSTGRES_USER=postgres
@@ -150,17 +150,12 @@ volumes:
 networks:
   produto-service-network:
     driver: bridge
-    internal: true
     name: produto-service-network
   pedido-service-network:
     driver: bridge
-    internal: true
     name: pedido-service-network
   pagamento-service-network:
     driver: bridge
-    internal: true
     name: pagamento-service-network
   rabbitmq-network:
-    driver: bridge
-    internal: true
     name: rabbitmq-network
