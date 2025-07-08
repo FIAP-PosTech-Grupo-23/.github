@@ -162,6 +162,7 @@ services:
       - PAGAMENTO_DATASOURCE_URL=postgresql-pagamento-service
       - PAGAMENTO_DATASOURCE_USERNAME=postgres
       - PAGAMENTO_DATASOURCE_PASSWORD=postgres
+      - PEDIDO_SERVICE_URL=fiap-pedido-service
     networks:
       - pagamento-service-network
   postgresql-pagamento-service:
