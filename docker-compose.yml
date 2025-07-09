@@ -89,36 +89,36 @@ services:
       interval: 10s
       timeout: 5s
 
-#  fiap-cliente-service:
-#    image: alangoncalvesaraujo/fiap-cliente-service
-#    ports:
-#      - "8083:8083"
-#    depends_on:
-#      postgresql-cliente-service:
-#        condition: service_healthy
-#    environment:
-#      - CLIENTE_DATASOURCE_URL=postgresql-cliente-service
-#      - CLIENTE_DATASOURCE_USERNAME=postgres
-#      - CLIENTE_DATASOURCE_PASSWORD=postgres
-#    networks:
-#      - cliente-service-network
-#  postgresql-cliente-service:
-#    image: postgres:15-alpine
-#    ports:
-#      - "5434:5432"
-#    environment:
-#      - POSTGRES_DB=cliente
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
-#    volumes:
-#      - postgres-cliente-service-volume:/var/lib/postgresql/data
-#    networks:
-#      - cliente-service-network
-#    healthcheck:
-#      test: ["CMD-SHELL", "pg_isready"]
-#      retries: 10
-#      interval: 10s
-#      timeout: 5s
+  fiap-cliente-service:
+    image: alangoncalvesaraujo/fiap-cliente-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgresql-cliente-service:
+        condition: service_healthy
+    environment:
+      - CLIENTE_DATASOURCE_URL=postgresql-cliente-service
+      - CLIENTE_DATASOURCE_USERNAME=postgres
+      - CLIENTE_DATASOURCE_PASSWORD=postgres
+    networks:
+      - cliente-service-network
+  postgresql-cliente-service:
+    image: postgres:15-alpine
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=cliente
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-cliente-service-volume:/var/lib/postgresql/data
+    networks:
+      - cliente-service-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      retries: 10
+      interval: 10s
+      timeout: 5s
 #
 #  fiap-estoque-service:
 #    image: alangoncalvesaraujo/fiap-estoque-service
@@ -205,7 +205,7 @@ services:
 volumes:
   postgres-produto-service-volume:
   postgres-pedido-service-volume:
-#  postgres-cliente-service-volume:
+  postgres-cliente-service-volume:
 #  postgres-estoque-service-volume:
   postgres-pagamento-service-volume:
   rabbitmq-lib:
@@ -218,9 +218,9 @@ networks:
   pedido-service-network:
     driver: bridge
     name: pedido-service-network
-#  cliente-service-network:
-#    driver: bridge
-#    name: cliente-service-network
+  cliente-service-network:
+    driver: bridge
+    name: cliente-service-network
 #  estoque-service-network:
 #    driver: bridge
 #    name: estoque-service-network
