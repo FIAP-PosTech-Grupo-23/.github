@@ -38,6 +38,7 @@ services:
     networks:
       - pedido-service-network
       - produto-service-network
+      - cliente-service-network
       - pagamento-service-network
       - rabbitmq-network
   postgresql-pedido-service:
