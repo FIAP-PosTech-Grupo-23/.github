@@ -44,20 +44,19 @@ Este projeto é um sistema de pedidos distribuído, construído com arquitetura 
 
 - Docker
 - Docker Compose
+- Arquivo para execução do Docker Compose, [disponível neste link](https://github.com/FIAP-PosTech-Grupo-23/.github/blob/main/docker-compose.yml)
 
 ### Subir os serviços
 
 ```bash
 docker compose -p fiap-pedido up --build
 ```
-[Link](https://github.com/FIAP-PosTech-Grupo-23/.github/blob/main/docker-compose.yml) para docker-compose.yml
-
 
 ---
 
 ## 🌐 Endpoints e Portas
 
-| Serviço                | Porta App | Banco            | Porta DB | Porta AMPQ |
+| Serviço                | Porta App | Banco            | Porta DB | Porta AMQP |
 |------------------------|-----------|------------------|----------|------------|
 | ms-fiap-receiver       | 8080      | —                | —        | —          |
 | ms-pedido-service      | 8081      | pedido           | 5432     | —          |
