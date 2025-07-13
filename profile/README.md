@@ -145,7 +145,7 @@ Content-Type: application/json
 ### 5. Webhook de Pagamento
 
 ```http
-GET http://localhost:8085/pagamentos/{id-pagamento}
+PUT http://localhost:8085/pagamentos/{id-pagamento}
 ```
 
 Esse endpoint é chamado por um sistema externo para informar que o status do pagamento está disponível. O `ms-pagamento-service` busca o status e informa o `ms-pedido-service`.
