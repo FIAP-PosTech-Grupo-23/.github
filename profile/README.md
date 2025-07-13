@@ -6,7 +6,7 @@ Este projeto é um sistema de pedidos distribuído, construído com arquitetura 
 
 ## ⚙️ Arquitetura do Sistema
 
-```mermaid
+
     A [Cliente Frontend ou API] -->|POST /pedidos| B[ms-fiap-receiver]
     B -->|Publica mensagem| C[RabbitMQ]
     C --> D[ms-pedido-service]
@@ -15,7 +15,7 @@ Este projeto é um sistema de pedidos distribuído, construído com arquitetura 
     D -->|POST Estoque| G[ms-estoque-service]
     D -->|POST Pagamento| H[ms-pagamento-service]
     H -->|Webhook| D
-```
+
 
 ---
 
