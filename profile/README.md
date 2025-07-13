@@ -81,7 +81,7 @@ Content-Type: application/json
   "endereco": "Rua jose, numero 10",
   "telefone": "11911111111",
   "dataNascimento": "1990-05-12",
-  "cpf": "379.100.138-84"
+  "cpf": "123.123.123-84"
 }
 ```
 
