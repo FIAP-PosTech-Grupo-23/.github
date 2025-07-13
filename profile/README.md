@@ -44,13 +44,14 @@ Este projeto é um sistema de pedidos distribuído, construído com arquitetura 
 
 - Docker
 - Docker Compose
-- [Link](https://github.com/FIAP-PosTech-Grupo-23/.github/blob/main/docker-compose.yml) para docker-compose.yml
 
 ### Subir os serviços
 
 ```bash
 docker compose -p fiap-pedido up --build
 ```
+[Link](https://github.com/FIAP-PosTech-Grupo-23/.github/blob/main/docker-compose.yml) para docker-compose.yml
+
 
 ---
 
