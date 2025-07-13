@@ -57,15 +57,15 @@ docker compose -p fiap-pedido up --build
 
 ## 🌐 Endpoints e Portas
 
-| Serviço                | Porta App | Banco            | Porta DB |
-|------------------------|-----------|------------------|----------|
-| ms-fiap-receiver       | 8080      | —                | —        |
-| ms-pedido-service      | 8081      | pedido           | 5432     |
-| ms-produto-service     | 8082      | produto          | 5433     |
-| ms-cliente-service     | 8083      | cliente          | 5434     |
-| ms-estoque-service     | 8084      | estoque          | 5435     |
-| ms-pagamento-service   | 8085      | pagamento        | 5436     |
-| RabbitMQ               | 15672     | —                | 5672     |
+| Serviço                | Porta App | Banco            | Porta DB | Porta AMPQ |
+|------------------------|-----------|------------------|----------|------------|
+| ms-fiap-receiver       | 8080      | —                | —        | —          |
+| ms-pedido-service      | 8081      | pedido           | 5432     | —          |
+| ms-produto-service     | 8082      | produto          | 5433     | —          |
+| ms-cliente-service     | 8083      | cliente          | 5434     | —          |
+| ms-estoque-service     | 8084      | estoque          | 5435     | —          |
+| ms-pagamento-service   | 8085      | pagamento        | 5436     | —          |
+| RabbitMQ               | 15672     | —                | —        | 5672       |
 
 ---
 
